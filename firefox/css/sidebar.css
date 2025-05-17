@@ -13,23 +13,39 @@ ul {
   padding: 0;
 }
 
-li > p {
-  margin-bottom: 10px;
-  padding: 1rem 1rem;
+li {
 }
 
-a {
+li > p {
+  margin-bottom: 10px;
+}
+
+.alert {
+  display: block;
+  cursor: default;
+}
+
+.alert::selection,
+.alert *::selection {
+  background: none;
+}
+
+.alert p {
+  text-wrap: nowrap;
+  margin: 0.25rem 0;
+}
+
+.message {
   text-decoration: none;
   margin-bottom: 0.25rem;
   text-wrap: nowrap;
 }
 
-a,
-a > span {
+.alert > p > * {
   display: inline-block;
 }
 
-a:hover > .message {
+.alert:hover .message {
   background: lightgray;
 }
 
@@ -48,6 +64,18 @@ a:hover > .message {
 
 .badge:not(:first-child) {
   margin-left: 0.25rem;
+}
+
+.badge.action {
+  cursor: pointer;
+}
+
+.badge.action:hover {
+  outline: 1px solid darkgray;
+}
+
+.badge.action:active {
+  box-shadow: 1px 2px 7px 0px rgba(0,0,0,0.24);
 }
 
 .badge.mono {
@@ -92,6 +120,32 @@ a:hover > .message {
 
 .tiny {
   font-size: 0.75rem;
+}
+
+/* Status reporting */
+.status {
+  font-size: 10px;
+  text-transform: uppercase;
+  font-style: ;
+  font-variant: small-caps;
+  padding: 0.25rem 0.5rem;
+  background: red;
+  border-radius: 2.5px;
+  color: white;
+  text-align: center;
+  line-height: 14px;
+}
+
+.status.on {
+  background: green;
+}
+
+h1 {
+  display: flex;
+}
+
+h1 span:first-child {
+  margin-right: auto;
 }
 
 /* Forms */

@@ -23,7 +23,6 @@ export function opsgenieDomain(customerName) {
 };
 
 export const url = (settings) => `https://api.${OPSGENIE_DOMAIN[settings.region]}/v2/alerts?limit=100&sort=createdAt&query=${encodeURI(settings.query)}`;
-export const alert = (settings, guid) => (
-	console.log("shared.js alert()", settings, guid),
-	`https://${settings.customerName}.app.${OPSGENIE_DOMAIN[settings.region]}/alert/detail/${guid}/details`
-);
+
+export const alert = (settings, guid) => `https://${settings.customerName}.app.${OPSGENIE_DOMAIN[settings.region]}/alert/detail/${guid}/details`;
+export const ack = (settings, guid) => `https://${settings.customerName}.app.${OPSGENIE_DOMAIN[settings.region]}/alerts/${guid}/acknowledge`;

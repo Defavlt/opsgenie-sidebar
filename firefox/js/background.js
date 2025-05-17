@@ -1,4 +1,4 @@
-import {defaultSettings, opsgenieDomain, OPSGENIE_DOMAIN, url, alert} from "./lib/shared.js";
+import {defaultSettings, opsgenieDomain, OPSGENIE_DOMAIN, url, alert, ack} from "./lib/shared.js";
 import {mock} from "./mock.js";
 
 browser.runtime.onInstalled.addListener(async details => {
@@ -11,6 +11,9 @@ browser.runtime.onMessage.addListener((msg, sender, respond) => {
     (async () => {
         const settings = await browser.storage.sync.get(defaultSettings);
         switch(msg.action) {
+            case "ack":
+                return post_ack(settings, msg.id, msg.note);
+
 			case "options":
 				browser.runtime.openOptionsPage();
 				return;
@@ -105,6 +108,7 @@ const error = async (settings, message, placeholders) => {
 };
 
 const get = async (settings) => {
+    return mock();
     return await fetch(url(settings), {
         credentials: "omit",
         cache: "no-store",
@@ -113,9 +117,31 @@ const get = async (settings) => {
 
         headers: {
             "Accept": "application/json",
-        "Authorization": `GenieKey ${settings.apiKey}`
+            "Authorization": `GenieKey ${settings.apiKey}`
         }
     });
+};
+
+const post_ack = async (settings, id, note) => {
+    mock_ack();
+
+    /*return await fetch(ack(settings, id), {
+        method: "POST",
+        body: JSON.stringify({
+            user: `${settings.username}`,
+            source: `User actions`,
+            note
+        }),
+        credentials: "omit",
+        cache: "no-store",
+        redirect: "error",
+        referrerPolicy: "no-referrer",
+
+        headers: {
+            "Content-Type": "application/json"
+            "Authorization": `GenieKey ${settings.apiKey}`
+        }
+    });*/
 };
 
 const update = async (settings) => {
