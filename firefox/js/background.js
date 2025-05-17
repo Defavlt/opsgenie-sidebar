@@ -1,4 +1,4 @@
-import {defaultSettings, opsgenieDomain, OPSGENIE_DOMAIN} from "./lib/shared.js";
+import {defaultSettings, opsgenieDomain, OPSGENIE_DOMAIN, url, alert} from "./lib/shared.js";
 import {mock} from "./mock.js";
 
 browser.runtime.onInstalled.addListener(async details => {
@@ -11,11 +11,15 @@ browser.runtime.onMessage.addListener((msg, sender, respond) => {
     (async () => {
         const settings = await browser.storage.sync.get(defaultSettings);
         switch(msg.action) {
+			case "options":
+				browser.runtime.openOptionsPage();
+				return;
+
             case "reload":
                 return reload(settings);
 
             case "start":
-                start(settings);
+                return start(settings);
 
             case "update":
                 return respond(
@@ -32,24 +36,33 @@ browser.runtime.onMessage.addListener((msg, sender, respond) => {
 browser.storage.sync.onChanged.addListener(
     async (changes) => {
         if (changes.settings && changes.settings.newValue) {
-            reload(changes.settings.newValue);
+			browser.runtime.sendMessage({
+				action: "reload"
+			});
         }
     }
 )
 
 const start = async (settings) => {
-    const id = setInterval(
+	let id = browser.storage.session.get("intervalID");
+	if (id)
+		clearInterval(id);
+
+    id = setInterval(
         update,
-        settings.timeInterval,
+        settings.timeInterval < 5000?
+			settings.timeInterval < 60 && settings.timeInterval > 0?
+				settings.timeInterval * 1000:
+				5000:
+				5000,
         settings
     );
 
+	console.log("start", id);
     browser.storage.session.set({"intervalID": id});
 };
 
 const reload = async (settings) => {
-    const id = browser.storage.session.get("intervalID");
-    clearInterval(id);
     start(settings);
 };
 
@@ -69,13 +82,12 @@ const query = json => {
 };
 
 const api = async (settings, json) => {
-    const url = `https://api.${OPSGENIE_DOMAIN[settings.region]}/v2/alerts?limit=100&sort=createdAt&query=${encodeURI(settings.query)}`
     await browser.storage.session.set({
         api: {
             query: query(json),
             error: null,
             time: new Date(),
-            ogUrl: url
+            ogUrl: url(settings)
         }
     });
 };
@@ -93,8 +105,7 @@ const error = async (settings, message, placeholders) => {
 };
 
 const get = async (settings) => {
-    const url = `https://api.${OPSGENIE_DOMAIN[settings.region]}/v2/alerts?limit=100&sort=createdAt&query=${encodeURI(settings.query)}`;
-    return await fetch(url, {
+    return await fetch(url(settings), {
         credentials: "omit",
         cache: "no-store",
         redirect: "error",

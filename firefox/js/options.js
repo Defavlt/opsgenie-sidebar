@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('api-key').value = settings.apiKey;
     document.getElementById('username').value = settings.username;
     document.getElementById('query').value = settings.query;
-    document.getElementById('time-interval').value = parseInt(settings.timeInterval)
+    document.getElementById('time-interval').value = parseInt(settings.timeInterval) * 1000;
     document.getElementById('popup-height').value = parseInt(settings.popupHeight)
 });
 
@@ -56,7 +56,7 @@ document.querySelector('form').addEventListener('submit', async e => {
             apiKey: document.getElementById('api-key').value,
             username: document.getElementById('username').value,
             query: document.getElementById('query').value,
-            timeInterval: parseInt(document.getElementById('time-interval').value) || 1,
+            timeInterval: (parseInt(document.getElementById('time-interval').value) * 1000) || 5000,
             popupHeight: parseInt(document.getElementById('popup-height').value) || 300,
         });
 
