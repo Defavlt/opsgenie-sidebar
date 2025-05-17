@@ -33,6 +33,18 @@
             }
         }
     },
+	"options": {
+		"message": "Options"
+	},
+	"loading": {
+        "message": "Loading..."
+    },
+	"control": {
+        "message": "Controls"
+    },
+	"start": {
+        "message": "Start"
+    },
     "noData": {
         "message": "You're all done. Hooray for you! \\o/"
     },
