@@ -17,7 +17,13 @@ export const defaultSettings = {
 };
 
 export function opsgenieDomain(customerName) {
-    const domainSuffix = customerName !== '' ? '.' : ''
+    const domainSuffix = customerName !== '' ? '.' : '';
 
-    return `https://${customerName}${domainSuffix}app.opsgenie.com`
+    return `https://${customerName}${domainSuffix}app.opsgenie.com`;
 };
+
+export const url = (settings) => `https://api.${OPSGENIE_DOMAIN[settings.region]}/v2/alerts?limit=100&sort=createdAt&query=${encodeURI(settings.query)}`;
+export const alert = (settings, guid) => (
+	console.log("shared.js alert()", settings, guid),
+	`https://${settings.customerName}.app.${OPSGENIE_DOMAIN[settings.region]}/alert/detail/${guid}/details`
+);
